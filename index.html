@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clarum • Asistente de Estudio</title>
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #7e5bef;          /* púrpura principal */
+      --primary-light: #c5b7ff;   /* degradado claro */
+      --bg: #faf9ff;              /* fondo general */
+      --text: #242424;
+    }
+
+    * {box-sizing:border-box}
+    html,body {height:100%;margin:0;font-family:"Inter",sans-serif;background:var(--bg);color:var(--text);}
+
+    .layout {display:flex;flex-direction:column;min-height:100%;}
+    header {text-align:center;padding:2rem 1.5rem;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);color:#fff;}
+    header h1 {margin:0;font-size:1.9rem;font-weight:600;letter-spacing:-.5px;}
+    header p  {margin:.25rem 0 0;font-size:.95rem;opacity:.9;}
+
+    main   {flex:1;display:flex;justify-content:center;align-items:center;padding:1rem;}
+    .voice-box {position:relative;width:100%;max-width:420px;height:70vh;border-radius:1.2rem;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;}
+    .voice-box span {opacity:.5;text-align:center;max-width:70%;font-size:.9rem;}
+
+    footer {text-align:center;padding:1rem;font-size:.8rem;color:#666;}
+
+    /* Mic button */
+    #mic {position:absolute;bottom:1rem;right:1rem;width:56px;height:56px;border:none;border-radius:50%;background:var(--primary);color:#fff;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(126,91,239,.4);transition:transform .2s;}
+    #mic:hover {transform:scale(1.07);} 
+    #mic.listening {animation:pulse 1.5s infinite ease-in-out;}
+    @keyframes pulse {0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
+
+    @media(max-width:600px){
+      .voice-box{height:80vh;border-radius:.5rem;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+    <header>
+      <h1>Clarum</h1>
+      <p>Organiza tu tiempo de estudio con IA</p>
+    </header>
+
+    <main>
+      <div class="voice-box">
+        <span>Haz clic en el micrófono para hablar con Clarum</span>
+        <button id="mic" title="Dictar a Clarum">🎙️</button>
+      </div>
+    </main>
+
+    <footer>
+      © 2025 Clarum • Hecho con 💜 y Chatbase
+    </footer>
+  </div>
+
+  <!-- Chat bubble de Chatbase -->
+  <script src="https://www.chatbase.co/embed.min.js"
+          id="clarum-chat"
+          data-website-id="LtBrQRopg1Blit4oMlT9p"
+          data-theme-color="#7e5bef"
+          data-avatar-url="img/logo_clarum.png"
+          data-intro-message="¡Hola! Soy Clarum 🤗 ¿En qué puedo ayudarte?"
+          data-suggested-replies="Crear horario,Agregar tarea,🎧 Música,Pomofocus"
+          data-delay="1500">
+  </script>
+
+  <!-- Voz -->
+  <script>
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = SR ? new SR() : null;
+    const mic = document.getElementById('mic');
+    if(!rec){ mic.style.display='none'; }
+
+    function getChatbaseIframe(){
+      return document.querySelector('iframe[src*="chatbase"]');
+    }
+
+    function sendToClarum(text){
+      const frame = getChatbaseIframe();
+      if(frame){frame.contentWindow.postMessage({type:'user_input',text},'*');}
+    }
+
+    if(rec){
+      rec.lang='es-ES';
+      mic.onclick=()=>{rec.start();mic.classList.add('listening');window.chatbase&&window.chatbase('open');};
+      rec.onresult=e=>{const txt=e.results[0][0].transcript;sendToClarum(txt);}  
+      rec.onend=()=>mic.classList.remove('listening');
+    }
+
+    /* TTS opcional */
+    window.addEventListener('message',e=>{
+      if(e.data?.type==='bot_response'){
+        const utt=new SpeechSynthesisUtterance(e.data.text);utt.lang='es-ES';speechSynthesis.speak(utt);
+      }
+    });
+  </script>
+</body>
+</html>
