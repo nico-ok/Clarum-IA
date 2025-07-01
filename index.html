@@ -5,19 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clarum • Asistente de Estudio</title>
 
-  <!-- Fuente Inter -->
+  <!-- Fuente -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root{--primary:#7e5bef;--bg:#faf9ff;--text:#222;}
+    :root{--primary:#7e5bef;--bg:#faf9ff;--text:#242424;}
     *{box-sizing:border-box;margin:0}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh}
-    header{padding:2rem 1.5rem;text-align:center;background:var(--primary);color:#fff}
-    header h1{font-size:2rem;font-weight:600}
-    header p{opacity:.9;font-size:1rem;margin-top:.3rem}
-    footer{margin-top:auto;padding:1rem;text-align:center;font-size:.8rem;color:#666}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh;}
+
+    header{padding:2rem 1.5rem;text-align:center;background:var(--primary);color:#fff;}
+    header h1{font-size:2rem;font-weight:600;}
+    header p{font-size:.95rem;margin-top:.3rem;opacity:.9;}
+
+    main{flex:1;display:flex;justify-content:center;align-items:center;padding:1rem;}
+    #cb-frame{border:0;width:100%;max-width:420px;height:80vh;border-radius:1rem;box-shadow:0 6px 20px rgba(0,0,0,.08);}
+
+    #mic{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;width:60px;height:60px;border:none;border-radius:50%;background:var(--primary);color:#fff;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(126,91,239,.4);transition:transform .2s;}
+    #mic:hover{transform:scale(1.08);}
+    #mic.listening{animation:pulse 1.4s infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
+
+    footer{text-align:center;padding:1rem;font-size:.8rem;color:#666;}
   </style>
 </head>
 <body>
@@ -27,17 +36,54 @@
     <p>Organiza tu tiempo de estudio con IA</p>
   </header>
 
-  <footer>© 2025 Clarum • Hecho con 💜 y Chatbase</footer>
+  <main>
+    <!-- Iframe oficial de Chatbase preparado para postMessage -->
+    <iframe
+      id="cb-frame"
+      src="https://www.chatbase.co/embed/LtBrQRopg1Blit4oMlT9p">
+    </iframe>
+  </main>
 
-  <!-- Burbuja oficial de Chatbase -->
-  <script
-    src="https://www.chatbase.co/embed.min.js"
-    id="clarum-chat"
-    data-website-id="LtBrQRopg1Blit4oMlT9p"
-    data-theme-color="#7e5bef"
-    data-intro-message="¡Hola! Soy Clarum 🤗 ¿En qué puedo ayudarte hoy?"
-    data-suggested-replies="Crear horario,Agregar tarea,🎧 Música,Pomofocus"
-    data-delay="1200">
+  <!-- Micrófono -->
+  <button id="mic" title="Hablar con Clarum">🎙️</button>
+
+  <footer>© 2025 Clarum</footer>
+
+  <script>
+    // ---- Speech to Text ----
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const micBtn = document.getElementById('mic');
+    const frame  = document.getElementById('cb-frame');
+    if(!SR){ micBtn.style.display='none'; }
+
+    if(SR){
+      const rec = new SR();
+      rec.lang = 'es-ES';
+      rec.continuous = false;
+
+      micBtn.addEventListener('click', ()=>{
+        rec.start();
+        micBtn.classList.add('listening');
+      });
+
+      rec.addEventListener('result', e=>{
+        const txt = e.results[0][0].transcript.trim();
+        if(txt){
+          frame.contentWindow.postMessage({type:'user_input', text:txt}, '*');
+        }
+      });
+
+      rec.addEventListener('end', ()=> micBtn.classList.remove('listening'));
+    }
+
+    // ---- Text-to-Speech (opcional) ----
+    window.addEventListener('message', e=>{
+      if(e.data?.type === 'bot_response'){
+        const utt = new SpeechSynthesisUtterance(e.data.text);
+        utt.lang = 'es-ES';
+        speechSynthesis.speak(utt);
+      }
+    });
   </script>
 </body>
 </html>
