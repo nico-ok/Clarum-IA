@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clarum • Asistente de Estudio</title>
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #7e5bef;          /* púrpura principal */
+      --primary-light: #c5b7ff;   /* degradado claro */
+      --bg: #faf9ff;              /* fondo general */
+      --text: #242424;
+    }
+
+    * {box-sizing:border-box}
+    html,body {height:100%;margin:0;font-family:"Inter",sans-serif;background:var(--bg);color:var(--text);}
+
+    /* ---- Layout ---------------- */
+    .layout {display:flex;flex-direction:column;min-height:100%;}
+    header {text-align:center;padding:2rem 1.5rem;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);color:#fff;}
+    header h1 {margin:0;font-size:1.9rem;font-weight:600;letter-spacing:-.5px;}
+    header p {margin:.25rem 0 0;font-size:.95rem;opacity:.9;}
+
+    main {flex:1;display:flex;justify-content:center;align-items:center;padding:1rem;}
+    .chat-box {position:relative;width:100%;max-width:420px;height:78vh;background:#fff;border-radius:1.2rem;box-shadow:0 6px 20px rgba(0,0,0,.08);overflow:hidden;}
+    .chat-box iframe {border:0;width:100%;height:100%;}
+
+    footer {text-align:center;padding:1rem;font-size:.8rem;color:#666;}
+
+    /* ---- Mic button ------------- */
+    #mic {position:absolute;bottom:1rem;right:1rem;width:56px;height:56px;border:none;border-radius:50%;background:var(--primary);color:#fff;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(126,91,239,.4);transition:transform .2s;}
+    #mic:hover {transform:scale(1.07);}  
+    #mic.listening {animation:pulse 1.5s infinite ease-in-out;}
+    @keyframes pulse {0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+
+    /* ---- Responsive ------------- */
+    @media(max-width:600px){
+      .chat-box{height:85vh;border-radius:0;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+    <header>
+      <h1>Clarum</h1>
+      <p>Organiza tu tiempo de estudio con IA</p>
+    </header>
+
+    <main>
+      <div class="chat-box">
+        <!-- 1️⃣ Sustituye LtBrQRopg1Blit4oMlT9p por tu ID real de Chatbase -->
+        <iframe src="https://www.chatbase.co/chatbot-standalone/LtBrQRopg1Blit4oMlT9p" title="Chat Clarum"></iframe>
+        <!-- Botón de voz -->
+        <button id="mic" title="Dictar a Clarum">🎙️</button>
+      </div>
+    </main>
+
+    <footer>
+      © 2025 Clarum • Hecho con 💜 y Chatbase
+    </footer>
+  </div>
+
+  <!-- 2️⃣ Override opcional para avatar / color interno del widget -->
+  <script src="https://www.chatbase.co/embed.min.js" id="clarum-override"
+    data-website-id="LtBrQRopg1Blit4oMlT9p"
+    data-theme-color="#7e5bef"
+    data-avatar-url="LOGO_URL"
+    data-intro-message="¡Hola! Soy Clarum 🤗 ¿En qué materia necesitas ayuda?"
+    data-suggested-replies="Crear horario,Agregar tarea,🎧 Música,Pomofocus"
+    data-theme="auto"></script>
+
+  <!-- 3️⃣ Modo voz: SpeechRecognition + envío al iframe -->
+  <script>
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = SR ? new SR() : null;
+    const mic = document.getElementById('mic');
+    const iframeWin = document.querySelector('iframe').contentWindow;
+
+    if(!rec){mic.style.display='none';}
+    if(rec){
+      rec.lang = 'es-ES';
+      rec.continuous = false;
+      mic.addEventListener('click',()=>{rec.start();mic.classList.add('listening');});
+      rec.addEventListener('result',e=>{
+        const txt=e.results[0][0].transcript;
+        iframeWin.postMessage({type:'user_input',text:txt},'*');
+      });
+      rec.addEventListener('end',()=>mic.classList.remove('listening'));
+    }
+
+    /* TTS opcional: leer respuestas */
+    window.addEventListener('message',e=>{
+      if(e.data?.type==='bot_response'){
+        const utter=new SpeechSynthesisUtterance(e.data.text);
+        utter.lang='es-ES';
+        speechSynthesis.speak(utter);
+      }
+    });
+  </script>
+</body>
+</html>
