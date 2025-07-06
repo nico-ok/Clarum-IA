@@ -10,45 +10,89 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root{--p:#7e5bef;--bg:#f4f2ff;--txt:#222}
+    :root{
+      --p:#7e5bef;
+      --p-light:#bdb0ff;
+      --bg:#f4f2ff;
+      --txt:#222;
+    }
     *{box-sizing:border-box;margin:0;padding:0}
-
     body{
       font-family:'Inter',sans-serif;
       background:var(--bg); color:var(--txt);
       display:flex; flex-direction:column; min-height:100vh;
     }
 
+    /* ——— Cabecera ——— */
     header{
-      background:var(--p); color:#fff;
-      padding:1.8rem 1rem; text-align:center;
+      background:var(--p);
+      color:#fff;
+      padding:1.8rem 1rem;
+      text-align:center;
       box-shadow:0 2px 10px rgba(0,0,0,.05)
     }
     header h1{font-size:1.9rem;font-weight:600;letter-spacing:-.5px}
     header p{opacity:.9;margin-top:.25rem;font-size:.95rem}
 
-    /* Micrófono desplazado para no cubrir la burbuja */
+    /* ——— Contenido central ——— */
+    main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem;gap:3rem;}
+
+    /* Hero */
+    #hero{
+      max-width:860px;text-align:center;
+      background:#fff;border-radius:1rem;padding:2.2rem 1.6rem;
+      box-shadow:0 6px 18px rgba(0,0,0,.05)
+    }
+    #hero h2{color:var(--p);font-size:1.6rem;margin-bottom:.8rem}
+    #hero p{font-size:1rem;opacity:.9}
+
+    /* Info cards */
+    .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;max-width:860px;width:100%}
+    .card{
+      background:#fff;border-radius:1rem;padding:1.6rem;
+      box-shadow:0 4px 14px rgba(0,0,0,.05);
+      display:flex;flex-direction:column;gap:.6rem
+    }
+    .card h3{color:var(--p);font-size:1.1rem}
+    .card span{font-size:2rem}
+
+    /* Upload box */
+    #uploadBox{
+      background:#fff;border-radius:1rem;padding:1.8rem;
+      box-shadow:0 6px 18px rgba(0,0,0,.05);
+      display:flex;flex-direction:column;align-items:center;
+      gap:1rem;max-width:420px;width:100%;
+    }
+    #uploadBox button{
+      background:var(--p);color:#fff;border:none;border-radius:.6rem;
+      padding:.7rem 1.6rem;font-size:.95rem;cursor:pointer;
+      transition:background .2s
+    }
+    #uploadBox button:hover{background:#6d4ee0}
+    #uploadBox input{display:none}
+
+    /* Micrófono desplazado para no cubrir burbuja */
     #mic{
       position:fixed; right:110px; bottom:20px; z-index:9999;
-      width:58px; height:58px; border:none; border-radius:50%;
-      background:var(--p); color:#fff; font-size:28px; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      box-shadow:0 6px 18px rgba(126,91,239,.4); transition:transform .2s;
+      width:58px;height:58px;border:none;border-radius:50%;
+      background:var(--p);color:#fff;font-size:28px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 6px 18px rgba(126,91,239,.4);transition:transform .2s
     }
     #mic:hover{transform:scale(1.08)}
     #mic.listen{animation:pulse 1.3s infinite}
     @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 
-    footer{margin-top:auto;text-align:center;padding:1rem;font-size:.8rem;color:#666}
+    footer{margin-top:auto;text-align:center;padding:1.2rem;font-size:.8rem;color:#666}
 
-    /* Opcional: sube ligeramente la burbuja */
+    /* Ajuste burbuja */
     #clarum-chat-frame-bubble{bottom:20px !important;}
   </style>
 
-  <!-- Burbuja oficial de Chatbase -->
+  <!-- Burbuja Chatbase -->
   <script
     src="https://www.chatbase.co/embed.min.js"
-    id="LtBrQRopg1Blit4oMlT9p"     <!-- tu website-id -->
+    id="LtBrQRopg1Blit4oMlT9p"
     domain="www.chatbase.co"
     defer>
   </script>
@@ -60,52 +104,112 @@
     <p>Organiza tu tiempo de estudio con IA</p>
   </header>
 
+  <main>
+    <!-- Hero -->
+    <section id="hero">
+      <h2>Planifica, estudia y progresa</h2>
+      <p>Clarum te ayuda a convertir tu tiempo en resultados: crea horarios, registra tareas y responde tus dudas en cualquier momento.</p>
+    </section>
+
+    <!-- Información rápida -->
+    <div class="info-grid">
+      <div class="card">
+        <span>⏱️</span>
+        <h3>Técnicas de estudio</h3>
+        <p>Puedes preguntarle sobre Pomodoro, regla de los 2&nbsp;minutos, IVI&nbsp;LEE y más.</p>
+      </div>
+      <div class="card">
+        <span>📄</span>
+        <h3>Lee tus PDFs</h3>
+        <p>Adjunta tu guía y Clarum la indexará para responderte al instante.</p>
+      </div>
+      <div class="card">
+        <span>🎧</span>
+        <h3>Playlists enfocadas</h3>
+        <p>Recibe sugerencias de música para concentrarte y mantener el ritmo.</p>
+      </div>
+    </div>
+
+    <!-- Subir PDF -->
+    <div id="uploadBox">
+      <p style="text-align:center">Adjunta tu PDF de estudio (máx&nbsp;400&nbsp;KB) para que Clarum lo lea:</p>
+      <input type="file" id="pdfInput" accept="application/pdf">
+      <button id="pdfBtn">Elegir archivo…</button>
+      <span id="upStatus" style="font-size:.9rem;color:#4b4b4b;"></span>
+    </div>
+  </main>
+
   <!-- Botón de dictado -->
   <button id="mic" title="Hablar con Clarum">🎙️</button>
 
   <footer>© 2025 Clarum • Powered by Chatbase</footer>
 
-  <!-- JavaScript de voz -->
+  <!-- JS funcionalidad adicional -->
   <script>
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const micBtn    = document.getElementById('mic');
+  /* ——— PDF upload ——— */
+  const pdfInput = document.getElementById('pdfInput');
+  const pdfBtn   = document.getElementById('pdfBtn');
+  const statusEl = document.getElementById('upStatus');
 
-    if (!SpeechRec) {
-      micBtn.style.display = 'none';     // navegador sin Web Speech API
-    } else {
-      const rec = new SpeechRec();
-      rec.lang = 'es-ES';
+  pdfBtn.onclick = () => pdfInput.click();
 
-      micBtn.onclick = () => { rec.start(); micBtn.classList.add('listen'); };
-
-      rec.onresult = e => {
-        const text = e.results[0][0].transcript.trim();
-        if (!text) return;
-
-        // Asegura que la burbuja está abierta y localiza su iframe
-        window.chatbase && window.chatbase.open();
-        const sendMsg = () => {
-          const frame = document.querySelector('iframe[src*="chatbase"]');
-          if (frame){
-            frame.contentWindow.postMessage({type:'user_input', text}, '*');
-          } else {
-            setTimeout(sendMsg, 100);
-          }
-        };
-        sendMsg();
-      };
-
-      rec.onend = () => micBtn.classList.remove('listen');
+  pdfInput.onchange = async () => {
+    const file = pdfInput.files[0];
+    if (!file) return;
+    if (file.size > 400*1024){
+      statusEl.textContent = '❌ El archivo supera 400 KB. Divide el PDF.';
+      return;
     }
-
-    // Lectura opcional de la respuesta
-    window.addEventListener('message', e => {
-      if (e.data?.type === 'bot_response' && e.data.text){
-        const u = new SpeechSynthesisUtterance(e.data.text);
-        u.lang = 'es-ES';
-        speechSynthesis.speak(u);
+    statusEl.textContent = '⏳ Subiendo…';
+    const fd = new FormData();
+    fd.append('pdf', file);
+    try{
+      const r = await fetch('https://clarum-backend.vercel.app/api/upload',{ method:'POST', body:fd });
+      if(r.ok){
+        statusEl.textContent = '✅ Documento procesado, ¡consúltalo en el chat!';
+        window.chatbase && window.chatbase.open();
+      }else{
+        statusEl.textContent = '❌ Error al subir, inténtalo de nuevo.';
       }
-    });
+    }catch(err){
+      statusEl.textContent = '❌ Conexión fallida.';
+    }
+    pdfInput.value = ''; // permite volver a seleccionar
+  };
+
+  /* ——— Botón de voz ——— */
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micBtn    = document.getElementById('mic');
+
+  if (!SpeechRec) { micBtn.style.display='none'; }
+  else{
+    const rec = new SpeechRec();
+    rec.lang  = 'es-ES';
+    micBtn.onclick = ()=>{ rec.start(); micBtn.classList.add('listen'); };
+
+    rec.onresult = e=>{
+      const text = e.results[0][0].transcript.trim();
+      if(!text) return;
+      window.chatbase && window.chatbase.open();
+      const send = ()=>{
+        const frame = document.querySelector('iframe[src*="chatbase"]');
+        if(frame){
+          frame.contentWindow.postMessage({type:'user_input',text},'*');
+        }else{ setTimeout(send,100); }
+      };
+      send();
+    };
+    rec.onend = ()=> micBtn.classList.remove('listen');
+  }
+
+  /* ——— Lectura en voz alta ——— */
+  window.addEventListener('message',e=>{
+    if(e.data?.type==='bot_response' && e.data.text){
+      const u = new SpeechSynthesisUtterance(e.data.text);
+      u.lang='es-ES';
+      speechSynthesis.speak(u);
+    }
+  });
   </script>
 </body>
 </html>
