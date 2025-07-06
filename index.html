@@ -5,45 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clarum • Chat en vivo</title>
 
-  <!-- Fuente Inter -->
+  <!-- Fuente agradable -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root{--p:#7e5bef;--bg:#f4f2ff;--txt:#222}
-    *{box-sizing:border-box;margin:0}
+    :root{ --p:#7e5bef; --bg:#f4f2ff; --txt:#222 }
+    *{box-sizing:border-box;margin:0;padding:0}
+
     body{
       font-family:'Inter',sans-serif;
-      background:var(--bg);
-      color:var(--txt);
-      display:flex;flex-direction:column;min-height:100vh
+      background:var(--bg); color:var(--txt);
+      min-height:100vh; display:flex; flex-direction:column;
     }
+
+    /* Cabecera */
     header{
-      background:var(--p);
-      color:#fff;
-      padding:1.8rem 1rem;
-      text-align:center;
+      background:var(--p); color:#fff;
+      padding:1.8rem 1rem; text-align:center;
       box-shadow:0 2px 10px rgba(0,0,0,.05)
     }
     header h1{font-size:1.9rem;font-weight:600;letter-spacing:-.5px}
     header p{opacity:.9;margin-top:.25rem;font-size:.95rem}
 
-    /* Botón micrófono */
+    /* Botón micrófono: desplazado 90 px a la izquierda para no tapar la burbuja */
     #mic{
-      position:fixed;right:1.5rem;bottom:1.5rem;z-index:9999;
-      width:60px;height:60px;border:none;border-radius:50%;
-      background:var(--p);color:#fff;font-size:28px;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 6px 18px rgba(126,91,239,.4);transition:transform .2s
+      position:fixed; right:110px; bottom:20px; z-index:9999;
+      width:58px; height:58px; border:none; border-radius:50%;
+      background:var(--p); color:#fff; font-size:28px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 6px 18px rgba(126,91,239,.4); transition:transform .2s
     }
-    #mic:hover{transform:scale(1.08)}
-    #mic.listen{animation:pulse 1.3s infinite}
+    #mic:hover{ transform:scale(1.08) }
+    #mic.listen{ animation:pulse 1.3s infinite }
     @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 
-    footer{text-align:center;margin-top:auto;padding:1rem;font-size:.8rem;color:#666}
+    footer{margin-top:auto;text-align:center;padding:1rem;font-size:.8rem;color:#666}
+
+    /* opcional: subir la burbuja 20 px para que quede alineada con el mic */
+    #clarum-chat-frame-bubble{ bottom:20px !important; }
   </style>
 
-  <!-- Burbuja de Chatbase -->
+  <!-- Burbuja Chatbase -->
   <script
     src="https://www.chatbase.co/embed.min.js"
     id="clarum-chat"
@@ -51,7 +54,7 @@
     data-theme-color="#7e5bef"
     data-intro-message="¡Hola! Soy Clarum 🤗 ¿En qué puedo ayudarte?"
     data-suggested-replies="Crear horario,Agregar tarea,🎧 Música,Pomofocus"
-    data-delay="1200">
+    data-delay="800">
   </script>
 </head>
 
@@ -61,20 +64,21 @@
     <p>Organiza tu tiempo de estudio con IA</p>
   </header>
 
-  <!-- Botón de voz -->
+  <!-- Botón de dictado -->
   <button id="mic" title="Hablar con Clarum">🎙️</button>
 
   <footer>© 2025 Clarum • Powered by Chatbase</footer>
 
   <!-- JS Voz -->
   <script>
-    // Reconocimiento de voz (solo Chrome/Edge)
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     const micBtn = document.getElementById('mic');
 
-    if (!SR) { micBtn.style.display = 'none'; }
-    else {
-      const rec = new SR();
+    /* Oculta el botón si el navegador no soporta reconocimiento de voz */
+    if (!SpeechRec) {
+      micBtn.style.display = 'none';
+    } else {
+      const rec = new SpeechRec();
       rec.lang = 'es-ES';
       rec.continuous = false;
 
@@ -84,25 +88,25 @@
         const msg = e.results[0][0].transcript.trim();
         if (!msg) return;
 
-        // Asegura que la burbuja esté abierta y localiza su iframe
+        /* Asegura que la burbuja esté abierta y localiza su iframe */
         window.chatbase && window.chatbase.open();
-        const waitForFrame = () => {
+        const send = () => {
           const frame = document.querySelector('iframe[src*="chatbase"]');
-          if (frame) {
-            frame.contentWindow.postMessage({ type:'user_input', text: msg }, '*');
+          if (frame){
+            frame.contentWindow.postMessage({type:'user_input', text:msg}, '*');
           } else {
-            setTimeout(waitForFrame, 100);
+            setTimeout(send, 100); // espera a que cargue el iframe
           }
         };
-        waitForFrame();
+        send();
       };
 
       rec.onend = () => micBtn.classList.remove('listen');
     }
 
-    // TTS opcional: lee cada respuesta
+    /* Lectura opcional de las respuestas de Clarum */
     window.addEventListener('message', e => {
-      if (e.data?.type === 'bot_response') {
+      if (e.data?.type === 'bot_response' && e.data.text){
         const u = new SpeechSynthesisUtterance(e.data.text);
         u.lang = 'es-ES';
         speechSynthesis.speak(u);
