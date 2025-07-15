@@ -1,162 +1,120 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Clarum</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --p:#7e5bef;           /* púrpura principal   */
-  --p2:#ff70a6;          /* rosa acento        */
-  --p3:#4ec6e7;          /* azul-cian         */
-  --bg:#f3f1ff;          /* fondo sutil       */
-  --txt:#222;
-}
-/* RESET */
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;flex-direction:column;min-height:100vh}
-
-/*— CABECERA —*/
-header{
-  background:linear-gradient(135deg,var(--p)0%,#a186ff 100%);
-  color:#fff;text-align:center;padding:2.2rem 1rem;
-  box-shadow:0 2px 12px rgba(0,0,0,.06)
-}
-header h1{font-size:2rem;font-weight:600}
-header p{opacity:.9;margin-top:.4rem;font-size:.95rem}
-
-/*— CONTENIDO —*/
-main{flex:1;display:flex;flex-direction:column;align-items:center;padding:3rem 1rem;gap:3.2rem}
-
-/* Hero */
-#hero{max-width:900px;text-align:center;padding:2rem 2rem;border-radius:1rem;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.05)}
-#hero h2{font-size:1.8rem;background:linear-gradient(135deg,var(--p)0%,var(--p2)50%,var(--p3)100%);-webkit-background-clip:text;color:transparent}
-#hero p{margin-top:.7rem;font-size:1rem;opacity:.85}
-
-/* Cards */
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.8rem;max-width:900px;width:100%}
-.card{
-  background:#fff;padding:1.8rem;border-radius:1rem;box-shadow:0 6px 16px rgba(0,0,0,.05);transition:transform .25s;
-}
-.card:hover{transform:translateY(-4px)}
-.card span{font-size:2rem}
-.card h3{margin:.5rem 0;color:var(--p)}
-.card p{font-size:.9rem;opacity:.85}
-
-/* Upload box */
-#uploadBox{background:#fff;padding:2rem;border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.05);max-width:420px;width:100%;text-align:center;display:flex;flex-direction:column;gap:1rem}
-#uploadBox button{background:var(--p);color:#fff;border:none;border-radius:.6rem;padding:.8rem 1.7rem;font-size:.95rem;cursor:pointer;transition:background .2s}
-#uploadBox button:hover{background:#6d4ee0}
-#uploadBox input{display:none}
-#upStatus{font-size:.9rem}
-
-/* Botón Mic */
-#mic{
-  position:fixed;right:110px;bottom:24px;z-index:9999;
-  width:58px;height:58px;border:none;border-radius:50%;
-  background:var(--p);color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 6px 18px rgba(126,91,239,.4);cursor:pointer;transition:transform .2s
-}
-#mic:hover{transform:scale(1.1)}
-#mic.listen{animation:pulse 1.3s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
-
-/* Ajuste burbuja */
-#clarum-chat-frame-bubble{bottom:24px !important}
-
-/* Footer */
-footer{margin-top:auto;text-align:center;padding:1.4rem;font-size:.8rem;color:#666}
-</style>
-
-<!-- Burbuja -->
-<script src="https://www.chatbase.co/embed.min.js"
-        id="LtBrQRopg1Blit4oMlT9p" domain="www.chatbase.co" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clarum Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .card { @apply bg-white/70 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/30; }
+    .fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+  </style>
 </head>
-<body>
-<header>
-  <h1>Clarum</h1>
-  <p>Organiza tu tiempo de estudio con IA</p>
-</header>
+<body class="min-h-screen bg-gradient-to-tr from-purple-100 via-white to-pink-100 p-6">
+  <header class="flex justify-between items-center mb-12 px-4">
+    <h1 class="text-5xl font-extrabold text-purple-700">Clarum</h1>
+    <nav class="space-x-6">
+      <a href="#inicio" class="text-lg font-medium text-gray-700 hover:text-purple-600 transition">Inicio</a>
+      <a href="#agenda" class="text-lg font-medium text-gray-700 hover:text-green-600 transition">Agenda</a>
+      <a href="#pomodoro" class="text-lg font-medium text-gray-700 hover:text-pink-600 transition">Pomodoro</a>
+      <a href="#musica" class="text-lg font-medium text-gray-700 hover:text-blue-600 transition">Música</a>
+    </nav>
+  </header>
 
-<main>
-  <!-- Hero -->
-  <section id="hero">
-    <h2>Planifica, estudia y progresa</h2>
-    <p>Con Clarum conviertes tu tiempo en resultados: crea horarios, registra tareas y resuelve dudas al instante.</p>
-  </section>
+  <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 px-4">
+    <!-- Pomodoro -->
+    <section id="pomodoro" class="card p-6 fade-in delay-100">
+      <h2 class="text-3xl font-semibold text-pink-600 mb-4">Pomodoro</h2>
+      <div class="flex flex-col items-center space-y-4">
+        <div id="display" class="text-6xl font-mono text-purple-700">25:00</div>
+        <div class="space-x-3">
+          <button id="startBtn" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">Iniciar</button>
+          <button id="pauseBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Pausar</button>
+          <button id="resetBtn" class="px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 transition">Reiniciar</button>
+        </div>
+      </div>
+    </section>
 
-  <!-- Cards -->
-  <div class="info-grid">
-    <div class="card"><span>⏱️</span><h3>Técnicas de estudio</h3><p>Pregunta sobre Pomodoro, IVI&nbsp;LEE, regla de 2&nbsp;minutos y más.</p></div>
-    <div class="card"><span>📄</span><h3>Lee tus PDFs</h3><p>Adjunta tu guía y Clarum la indexará para responderte al instante.</p></div>
-    <div class="card"><span>🎧</span><h3>Playlists enfocadas</h3><p>Recibe música para concentrarte y mantener el ritmo.</p></div>
-  </div>
+    <!-- Agenda -->
+    <section id="agenda" class="card p-6 fade-in delay-300">
+      <h2 class="text-3xl font-semibold text-green-600 mb-4">Creador de Horarios</h2>
+      <form id="scheduleForm" class="space-y-4">
+        <div>
+          <label for="task" class="block text-gray-700">Tarea:</label>
+          <input type="text" id="task" class="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300" placeholder="Descripción de la tarea" required>
+        </div>
+        <div>
+          <label for="time" class="block text-gray-700">Horario:</label>
+          <input type="time" id="time" class="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300" required>
+        </div>
+        <button type="submit" class="w-full py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Agregar</button>
+      </form>
+      <ul id="scheduleList" class="mt-6 space-y-2 max-h-60 overflow-y-auto">
+        <!-- Items dinámicos -->
+      </ul>
+    </section>
 
-  <!-- Upload -->
-  <div id="uploadBox">
-    <p>Adjunta tu PDF de estudio (máx&nbsp;400&nbsp;KB) para que Clarum lo lea:</p>
-    <input type="file" id="pdfInput" accept="application/pdf">
-    <button id="pdfBtn">Elegir archivo…</button>
-    <span id="upStatus"></span>
-  </div>
-</main>
+    <!-- Playlists Spotify -->
+    <section id="musica" class="card p-6 fade-in delay-500">
+      <h2 class="text-3xl font-semibold text-blue-600 mb-4">Playlists</h2>
+      <button id="connectSpotify" class="w-full py-2 mb-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Conectar con Spotify</button>
+      <div id="playlistsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Cards dinámicas -->
+      </div>
+    </section>
+  </main>
 
-<!-- Mic -->
-<button id="mic" title="Hablar">🎙️</button>
+  <footer class="mt-12 text-center text-gray-500">© 2025 Clarum. Todos los derechos reservados.</footer>
 
-<footer>© 2025 Clarum • Powered by Chatbase</footer>
-
-<script>
-/* --- PDF upload --- */
-const pdfInput=document.getElementById('pdfInput'),
-      pdfBtn  =document.getElementById('pdfBtn'),
-      status  =document.getElementById('upStatus');
-
-pdfBtn.onclick=()=>pdfInput.click();
-pdfInput.onchange=async()=>{
-  const file=pdfInput.files[0];
-  if(!file) return;
-  if(file.size>400*1024){status.textContent='❌ Más de 400 KB';return;}
-  status.textContent='⏳ Subiendo…';
-  const fd=new FormData(); fd.append('pdf',file);
-  try{
-    const r=await fetch('https://clarum-backend.vercel.app/api/upload',{method:'POST',body:fd});
-    if(r.ok){
-      status.textContent='✅ Procesado, pregúntale a Clarum';
-      window.chatbase && window.chatbase.open();
-    }else{
-      const txt=await r.text();
-      status.textContent='❌ Error ('+r.status+'): '+txt;
+  <!-- Scripts -->
+  <script>
+    // Pomodoro
+    const display = document.getElementById('display');
+    let totalTime = 25 * 60;
+    let intervalId;
+    function updateDisplay() {
+      const min = String(Math.floor(totalTime/60)).padStart(2, '0');
+      const sec = String(totalTime%60).padStart(2, '0');
+      display.textContent = `${min}:${sec}`;
     }
-  }catch(err){ status.textContent='❌ Conexión fallida'; }
-  pdfInput.value='';
-};
+    document.getElementById('startBtn').onclick = () => {
+      clearInterval(intervalId);
+      intervalId = setInterval(() => {
+        if (totalTime > 0) {
+          totalTime--; updateDisplay();
+        } else clearInterval(intervalId);
+      }, 1000);
+    };
+    document.getElementById('pauseBtn').onclick = () => clearInterval(intervalId);
+    document.getElementById('resetBtn').onclick = () => { totalTime = 25*60; updateDisplay(); };
 
-/* --- Voz --- */
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-const mic=document.getElementById('mic');
-if(!SR){mic.style.display='none';}else{
-  const rec=new SR(); rec.lang='es-ES';
-  mic.onclick=()=>{rec.start();mic.classList.add('listen');};
-  rec.onresult=e=>{
-    const msg=e.results[0][0].transcript.trim(); if(!msg) return;
-    window.chatbase && window.chatbase.open();
-    (function send(){
-      const frame=document.querySelector('iframe[src*="chatbase"]');
-      if(frame){frame.contentWindow.postMessage({type:'user_input',text:msg},'*');}
-      else setTimeout(send,100);
-    })();
-  };
-  rec.onend=()=>mic.classList.remove('listen');
-}
-window.addEventListener('message',e=>{
-  if(e.data?.type==='bot_response'&&e.data.text){
-    const u=new SpeechSynthesisUtterance(e.data.text);u.lang='es-ES';speechSynthesis.speak(u);
-  }
-});
-</script>
+    // Schedule
+    const form = document.getElementById('scheduleForm');
+    const list = document.getElementById('scheduleList');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const task = form.task.value;
+      const time = form.time.value;
+      const li = document.createElement('li');
+      li.className = 'flex justify-between bg-white/50 p-2 rounded-lg border';
+      li.innerHTML = `<span>${time}</span><span>${task}</span>`;
+      list.appendChild(li);
+      form.reset();
+    });
+
+    // Spotify Placeholder
+    document.getElementById('connectSpotify').onclick = () => alert('Función de autenticación Spotify pendiente de implementar');
+
+    // Animaciones de aparición
+    document.querySelectorAll('.fade-in').forEach((el, i) => {
+      el.style.animationDelay = `${i * 0.2 + 0.2}s`;
+    });
+  </script>
 </body>
 </html>
 
