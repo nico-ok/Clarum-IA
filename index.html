@@ -16,7 +16,17 @@
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-tr from-purple-100 via-white to-pink-100 p-6">
-  <header class="flex justify-between items-center mb-12 px-4">
+  <!-- Sección de introducción -->
+  <section id="intro" class="mb-12 p-8 card lg:mx-24 fade-in">
+    <h2 class="text-4xl font-bold text-purple-700 mb-4">Bienvenido a Clarum</h2>
+    <p class="text-lg text-gray-800">
+      Clarum es tu asistente de organización personal diseñado para potenciar tu productividad y bienestar.
+      Combina métodos efectivos como la técnica Pomodoro, planificación de horarios y ambientes sonoros a través de playlists de Spotify.
+      Gestiona tu tiempo, reduce la fatiga y mantén el foco con una interfaz intuitiva y visualmente atractiva.
+    </p>
+  </section>
+
+  <header class="flex justify-between items-center mb-12 px-4 fade-in delay-200">
     <h1 class="text-5xl font-extrabold text-purple-700">Clarum</h1>
     <nav class="space-x-6">
       <a href="#inicio" class="text-lg font-medium text-gray-700 hover:text-purple-600 transition">Inicio</a>
@@ -28,7 +38,7 @@
 
   <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 px-4">
     <!-- Pomodoro -->
-    <section id="pomodoro" class="card p-6 fade-in delay-100">
+    <section id="pomodoro" class="card p-6 fade-in delay-400">
       <h2 class="text-3xl font-semibold text-pink-600 mb-4">Pomodoro</h2>
       <div class="flex flex-col items-center space-y-4">
         <div id="display" class="text-6xl font-mono text-purple-700">25:00</div>
@@ -41,7 +51,7 @@
     </section>
 
     <!-- Agenda -->
-    <section id="agenda" class="card p-6 fade-in delay-300">
+    <section id="agenda" class="card p-6 fade-in delay-600">
       <h2 class="text-3xl font-semibold text-green-600 mb-4">Creador de Horarios</h2>
       <form id="scheduleForm" class="space-y-4">
         <div>
@@ -60,7 +70,7 @@
     </section>
 
     <!-- Playlists Spotify -->
-    <section id="musica" class="card p-6 fade-in delay-500">
+    <section id="musica" class="card p-6 fade-in delay-800">
       <h2 class="text-3xl font-semibold text-blue-600 mb-4">Playlists</h2>
       <button id="connectSpotify" class="w-full py-2 mb-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Conectar con Spotify</button>
       <div id="playlistsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -69,7 +79,7 @@
     </section>
   </main>
 
-  <footer class="mt-12 text-center text-gray-500">© 2025 Clarum. Todos los derechos reservados.</footer>
+  <footer class="mt-12 text-center text-gray-500 fade-in delay-1000">© 2025 Clarum. Todos los derechos reservados.</footer>
 
   <!-- Scripts -->
   <script>
@@ -117,4 +127,5 @@
   </script>
 </body>
 </html>
+
 
